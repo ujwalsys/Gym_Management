@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Update Batch - Gym Management System</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #333; 
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            color: #555; 
+        }
+        input[type="text"], input[type="number"], input[type="time"], 
+        select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            box-sizing: border-box;
+        }
+        select { 
+            height: 45px; 
+        }
+        .btn { 
+            background-color: #ffc107; 
+            color: #212529; 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-right: 10px; 
+        }
+        .btn:hover { 
+            background-color: #e0a800; 
+        }
+        .btn-secondary { 
+            background-color: #6c757d; 
+            color: white;
+        }
+        .btn-secondary:hover { 
+            background-color: #5a6268; 
+        }
+        .form-actions { 
+            text-align: center; 
+            margin-top: 30px; 
+        }
+        .back-link { 
+            display: inline-block; 
+            margin-bottom: 20px; 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        .back-link:hover { 
+            text-decoration: underline; 
+        }
+        .required { 
+            color: red; 
+        }
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .time-group {
+            display: flex;
+            gap: 10px;
+        }
+        .time-group .form-group {
+            flex: 1;
+        }
+        .current-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        #updateForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="welcome.html" class="back-link">← Back to Home</a>
+        
+        <div class="header">
+            <h1>✏️ Update Batch</h1>
+            <p>Modify existing batch information</p>
+        </div>
+        
+        <!-- Search Section -->
+        <div class="search-section">
+            <h3>Find Batch to Update</h3>
+            <div class="form-group">
+                <label for="searchBatch">Select Batch to Update</label>
+                <select id="searchBatch">
+                    <option value="">Select a batch...</option>
+                    <option value="1">Morning Bench Press (06:00 - 07:00)</option>
+                    <option value="2">Morning Deadlift Training (07:30 - 08:30)</option>
+                    <option value="3">Evening Squats & Legs (18:00 - 19:00)</option>
+                    <option value="4">Evening Full Body Workout (19:30 - 20:30)</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="loadBatchData()">Load Batch Details</button>
+        </div>
+        
+        <!-- Update Form -->
+        <form id="updateForm" onsubmit="updateBatch(event)">
+            <div class="current-info">
+                <h4>Current Batch Information</h4>
+                <div id="currentBatchInfo">
+                    Batch details will appear here...
+                </div>
+            </div>
+            
+            <input type="hidden" id="batchId" name="batchId">
+            
+            <div class="form-group">
+                <label for="batchName">Batch Name <span class="required">*</span></label>
+                <input type="text" id="batchName" name="batchName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="instructor">Instructor Name <span class="required">*</span></label>
+                <input type="text" id="instructor" name="instructor" required>
+            </div>
+            
+            <div class="time-group">
+                <div class="form-group">
+                    <label for="startTime">Start Time <span class="required">*</span></label>
+                    <input type="time" id="startTime" name="startTime" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endTime">End Time <span class="required">*</span></label>
+                    <input type="time" id="endTime" name="endTime" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="timeSlot">Time Slot <span class="required">*</span></label>
+                <select id="timeSlot" name="timeSlot" required>
+                    <option value="MORNING">Morning</option>
+                    <option value="EVENING">Evening</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="maxCapacity">Maximum Capacity <span class="required">*</span></label>
+                <input type="number" id="maxCapacity" name="maxCapacity" 
+                       min="1" max="50" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn">Update Batch</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelUpdate()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Sample batch data (in real app, this would come from API)
+        const batchData = {
+            1: { id: 1, name: "Morning Bench Press", instructor: "Yamin", startTime: "06:00", endTime: "07:00", timeSlot: "MORNING", maxCapacity: 25, currentCount: 2 },
+            2: { id: 2, name: "Morning Deadlift Training", instructor: "Yamin", startTime: "07:30", endTime: "08:30", timeSlot: "MORNING", maxCapacity: 20, currentCount: 1 },
+            3: { id: 3, name: "Evening Squats & Legs", instructor: "Yamin", startTime: "18:00", endTime: "19:00", timeSlot: "EVENING", maxCapacity: 30, currentCount: 1 },
+            4: { id: 4, name: "Evening Full Body Workout", instructor: "Yamin", startTime: "19:30", endTime: "20:30", timeSlot: "EVENING", maxCapacity: 20, currentCount: 0 }
+        };
+        
+        function loadBatchData() {
+            const selectedBatchId = document.getElementById('searchBatch').value;
+            
+            if (!selectedBatchId) {
+                alert('Please select a batch first!');
+                return;
+            }
+            
+            const batch = batchData[selectedBatchId];
+            
+            if (batch) {
+                // Show current info
+                document.getElementById('currentBatchInfo').innerHTML = `
+                    <strong>Name:</strong> ${batch.name}<br>
+                    <strong>Instructor:</strong> ${batch.instructor}<br>
+                    <strong>Time:</strong> ${batch.startTime} - ${batch.endTime} (${batch.timeSlot})<br>
+                    <strong>Capacity:</strong> ${batch.currentCount}/${batch.maxCapacity} participants
+                `;
+                
+                // Populate form
+                document.getElementById('batchId').value = batch.id;
+                document.getElementById('batchName').value = batch.name;
+                document.getElementById('instructor').value = batch.instructor;
+                document.getElementById('startTime').value = batch.startTime;
+                document.getElementById('endTime').value = batch.endTime;
+                document.getElementById('timeSlot').value = batch.timeSlot;
+                document.getElementById('maxCapacity').value = batch.maxCapacity;
+                
+                // Show update form
+                document.getElementById('updateForm').style.display = 'block';
+            }
+        }
+        
+        function updateBatch(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const batchId = formData.get('batchId');
+            
+            // In real app, send PUT request to /batches/{id}
+            alert(`Batch ${batchId} would be updated with new information!`);
+            
+            // Reset form
+            cancelUpdate();
+        }
+        
+        function cancelUpdate() {
+            document.getElementById('updateForm').style.display = 'none';
+            document.getElementById('searchBatch').value = '';
+        }
+        
+        // Auto-set time slot based on start time
+        document.getElementById('startTime').addEventListener('change', function() {
+            const startTime = this.value;
+            const timeSlotSelect = document.getElementById('timeSlot');
+            
+            if (startTime) {
+                const hour = parseInt(startTime.split(':')[0]);
+                if (hour >= 5 && hour < 12) {
+                    timeSlotSelect.value = 'MORNING';
+                } else if (hour >= 12 && hour < 22) {
+                    timeSlotSelect.value = 'EVENING';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

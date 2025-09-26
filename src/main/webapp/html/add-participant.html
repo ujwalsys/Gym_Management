@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Participant - Gym Management System</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #333; 
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            color: #555; 
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            box-sizing: border-box;
+        }
+        select { 
+            height: 45px; 
+        }
+        textarea { 
+            height: 80px; 
+            resize: vertical; 
+        }
+        .btn { 
+            background-color: #007bff; 
+            color: white; 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-right: 10px; 
+        }
+        .btn:hover { 
+            background-color: #0056b3; 
+        }
+        .btn-secondary { 
+            background-color: #6c757d; 
+        }
+        .btn-secondary:hover { 
+            background-color: #5a6268; 
+        }
+        .form-actions { 
+            text-align: center; 
+            margin-top: 30px; 
+        }
+        .back-link { 
+            display: inline-block; 
+            margin-bottom: 20px; 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        .back-link:hover { 
+            text-decoration: underline; 
+        }
+        .required { 
+            color: red; 
+        }
+        .name-group {
+            display: flex;
+            gap: 10px;
+        }
+        .name-group .form-group {
+            flex: 1;
+        }
+        .batch-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="welcome.html" class="back-link">← Back to Home</a>
+        
+        <div class="header">
+            <h1>👥 Add New Participant</h1>
+            <p>Register a new gym member</p>
+        </div>
+        
+        <form id="addParticipantForm" action="../participants" method="POST">
+            <div class="name-group">
+                <div class="form-group">
+                    <label for="firstName">First Name <span class="required">*</span></label>
+                    <input type="text" id="firstName" name="firstName" placeholder="e.g., John" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name <span class="required">*</span></label>
+                    <input type="text" id="lastName" name="lastName" placeholder="e.g., Doe" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="e.g., john.doe@email.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="e.g., 9876543210" pattern="[0-9]{10}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" placeholder="Enter full address..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="batchId">Select Batch <span class="required">*</span></label>
+                <select id="batchId" name="batchId" required>
+                    <option value="">Select a batch...</option>
+                    <option value="1">Morning Bench Press (06:00 - 07:00)</option>
+                    <option value="2">Morning Deadlift Training (07:30 - 08:30)</option>
+                    <option value="3">Evening Squats & Legs (18:00 - 19:00)</option>
+                    <option value="4">Evening Full Body Workout (19:30 - 20:30)</option>
+                </select>
+                <div class="batch-info" id="batchInfo" style="display: none;">
+                    Selected batch details will appear here...
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn">Add Participant</button>
+                <button type="reset" class="btn btn-secondary">Clear Form</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Auto-focus first name on page load
+        document.getElementById('firstName').focus();
+        
+        // Phone number input sanitization
+        document.getElementById('phone').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').substring(0, 10);
+        });
+
+        // Show selected batch info
+        document.getElementById('batchId').addEventListener('change', function() {
+            const batchInfo = document.getElementById('batchInfo');
+            const selectedOption = this.options[this.selectedIndex];
+            
+            if (this.value) {
+                batchInfo.style.display = 'block';
+                batchInfo.innerHTML = `<strong>Selected:</strong> ${selectedOption.text}<br>
+                                       <strong>Note:</strong> Please arrive 10 minutes before the session starts.`;
+            } else {
+                batchInfo.style.display = 'none';
+            }
+        });
+
+        // Form validation on submit
+        document.getElementById('addParticipantForm').addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Please enter a valid email address!');
+                return false;
+            }
+            
+            if (phone.length !== 10) {
+                e.preventDefault();
+                alert('Phone number must be exactly 10 digits!');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

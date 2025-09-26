@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Batch - Gym Management System</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #333; 
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+            color: #555; 
+        }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="time"], 
+        select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            box-sizing: border-box;
+        }
+        select { 
+            height: 45px; 
+        }
+        textarea { 
+            height: 80px; 
+            resize: vertical; 
+        }
+        .btn { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-right: 10px; 
+        }
+        .btn:hover { 
+            background-color: #218838; 
+        }
+        .btn-secondary { 
+            background-color: #6c757d; 
+        }
+        .btn-secondary:hover { 
+            background-color: #5a6268; 
+        }
+        .form-actions { 
+            text-align: center; 
+            margin-top: 30px; 
+        }
+        .back-link { 
+            display: inline-block; 
+            margin-bottom: 20px; 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        .back-link:hover { 
+            text-decoration: underline; 
+        }
+        .required { 
+            color: red; 
+        }
+        .time-group {
+            display: flex;
+            gap: 10px;
+        }
+        .time-group .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="welcome.html" class="back-link">← Back to Home</a>
+        
+        <div class="header">
+            <h1>🏋️ Add New Batch</h1>
+            <p>Create a new training batch for gym participants</p>
+        </div>
+        
+        <form action="../batches" method="POST" id="addBatchForm">
+            <div class="form-group">
+                <label for="batchName">Batch Name <span class="required">*</span></label>
+                <input type="text" id="batchName" name="batchName" 
+                       placeholder="e.g., Morning Bench Press" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="instructor">Instructor Name <span class="required">*</span></label>
+                <input type="text" id="instructor" name="instructor" 
+                       placeholder="e.g., Yamin" required>
+            </div>
+            
+            <div class="time-group">
+                <div class="form-group">
+                    <label for="startTime">Start Time <span class="required">*</span></label>
+                    <input type="time" id="startTime" name="startTime" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endTime">End Time <span class="required">*</span></label>
+                    <input type="time" id="endTime" name="endTime" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="timeSlot">Time Slot <span class="required">*</span></label>
+                <select id="timeSlot" name="timeSlot" required>
+                    <option value="">Select Time Slot</option>
+                    <option value="MORNING">Morning</option>
+                    <option value="EVENING">Evening</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="maxCapacity">Maximum Capacity <span class="required">*</span></label>
+                <input type="number" id="maxCapacity" name="maxCapacity" 
+                       placeholder="e.g., 25" min="1" max="50" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn">Create Batch</button>
+                <button type="reset" class="btn btn-secondary">Clear Form</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Form validation
+        document.getElementById('addBatchForm').addEventListener('submit', function(e) {
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            if (startTime && endTime) {
+                if (startTime >= endTime) {
+                    e.preventDefault();
+                    alert('End time must be after start time!');
+                    return false;
+                }
+            }
+        });
+        
+        // Auto-set time slot based on start time
+        document.getElementById('startTime').addEventListener('change', function() {
+            const startTime = this.value;
+            const timeSlotSelect = document.getElementById('timeSlot');
+            
+            if (startTime) {
+                const hour = parseInt(startTime.split(':')[0]);
+                if (hour >= 5 && hour < 12) {
+                    timeSlotSelect.value = 'MORNING';
+                } else if (hour >= 12 && hour < 22) {
+                    timeSlotSelect.value = 'EVENING';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

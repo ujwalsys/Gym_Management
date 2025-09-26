@@ -1,0 +1,9 @@
+com\gym\dao\ParticipantDAO.class
+com\gym\servlet\BatchServlet.class
+com\gym\dao\DatabaseConnection.class
+com\gym\dao\BatchDAO.class
+com\gym\repository\BatchRepository.class
+com\gym\model\Participant.class
+com\gym\model\Batch.class
+com\gym\repository\ParticipantRepository.class
+com\gym\servlet\ParticipantServlet.class
