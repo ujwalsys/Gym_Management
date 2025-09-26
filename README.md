@@ -129,13 +129,10 @@ git push -u origin main
 
 ---
 
-Made with ❤️ by **Ujwal CSE1 040**
+Made with ❤️ by **Ujwal**
 
 ```
 
 ---
 
-If you want, I can also **add some GitHub badges for build status, Java version, and license** so your README looks modern and professional.  
 
-Do you want me to do that?
-```
